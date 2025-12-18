@@ -1,0 +1,47 @@
+scale: BDI2
+version: "1.0.0"
+
+meta:
+  name: { ko: "벡 우울 척도 II", en: "Beck Depression Inventory-II" }
+  category: depression
+  time_frame: { ko: "지난 2주 동안", en: "During the past two weeks" }
+  citation: "Beck AT, Steer RA, Brown GK. Manual for the Beck Depression Inventory-II. 1996"
+
+response_type: likert(0-3)
+
+items:
+  - { id: q1, text: { ko: "슬픔", en: "Sadness" }, subscale: cognitive }
+  - { id: q2, text: { ko: "비관", en: "Pessimism" }, subscale: cognitive }
+  - { id: q3, text: { ko: "과거의 실패", en: "Past Failure" }, subscale: cognitive }
+  - { id: q4, text: { ko: "즐거움의 상실", en: "Loss of Pleasure" }, subscale: cognitive }
+  - { id: q5, text: { ko: "죄책감", en: "Guilty Feelings" }, subscale: cognitive }
+  - { id: q6, text: { ko: "처벌감", en: "Punishment Feelings" }, subscale: cognitive }
+  - { id: q7, text: { ko: "자기혐오", en: "Self-Dislike" }, subscale: cognitive }
+  - { id: q8, text: { ko: "자기비판", en: "Self-Criticalness" }, subscale: cognitive }
+  - { id: q9, text: { ko: "자살사고", en: "Suicidal Thoughts or Wishes" }, subscale: cognitive }
+  - { id: q10, text: { ko: "울음", en: "Crying" }, subscale: cognitive }
+  - { id: q11, text: { ko: "초조", en: "Agitation" }, subscale: somatic }
+  - { id: q12, text: { ko: "흥미상실", en: "Loss of Interest" }, subscale: cognitive }
+  - { id: q13, text: { ko: "우유부단", en: "Indecisiveness" }, subscale: cognitive }
+  - { id: q14, text: { ko: "무가치감", en: "Worthlessness" }, subscale: cognitive }
+  - { id: q15, text: { ko: "활력상실", en: "Loss of Energy" }, subscale: somatic }
+  - { id: q16, text: { ko: "수면양상의 변화", en: "Changes in Sleeping Pattern" }, subscale: somatic }
+  - { id: q17, text: { ko: "짜증", en: "Irritability" }, subscale: somatic }
+  - { id: q18, text: { ko: "식욕의 변화", en: "Changes in Appetite" }, subscale: somatic }
+  - { id: q19, text: { ko: "집중 곤란", en: "Concentration Difficulty" }, subscale: cognitive }
+  - { id: q20, text: { ko: "피로감", en: "Tiredness or Fatigue" }, subscale: somatic }
+  - { id: q21, text: { ko: "성에 대한 흥미상실", en: "Loss of Interest in Sex" }, subscale: somatic }
+
+subscales:
+  cognitive:
+    label: { ko: "인지적 우울", en: "Cognitive-Affective" }
+    items: [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q12, q13, q14, q19]
+  somatic:
+    label: { ko: "신체적 우울", en: "Somatic-Performance" }
+    items: [q11, q15, q16, q17, q18, q20, q21]
+
+scoring:
+  total: sum(q1..q21)
+  cognitive_score: sum(cognitive)
+  somatic_score: sum(somatic)
+  severity: cut(total, [14, 20, 29], [minimal, mild, moderate, severe])

@@ -1,0 +1,33 @@
+scale: PSS10
+version: "1.0.0"
+
+meta:
+  name: { ko: "지각된 스트레스 척도-10", en: "Perceived Stress Scale-10" }
+  category: stress
+  time_frame: { ko: "지난 한 달 동안", en: "In the last month" }
+  citation: "Cohen S, Kamarck T, Mermelstein R. A global measure of perceived stress. J Health Soc Behav. 1983"
+
+response_type: likert(0-4)
+options:
+  - { value: 0, label: { ko: "전혀 없었다", en: "Never" } }
+  - { value: 1, label: { ko: "거의 없었다", en: "Almost never" } }
+  - { value: 2, label: { ko: "때때로 있었다", en: "Sometimes" } }
+  - { value: 3, label: { ko: "자주 있었다", en: "Fairly often" } }
+  - { value: 4, label: { ko: "매우 자주 있었다", en: "Very often" } }
+
+items:
+  - { id: q1, text: { ko: "예상치 못한 일이 생겨서 기분이 나빠진 적이 얼마나 있었습니까?", en: "How often have you been upset because of something that happened unexpectedly?" } }
+  - { id: q2, text: { ko: "중요한 일들을 통제할 수 없다고 느낀 적은 얼마나 있었습니까?", en: "How often have you felt that you were unable to control the important things in your life?" } }
+  - { id: q3, text: { ko: "초조하거나 스트레스가 쌓인다고 느낀 적은 얼마나 있었습니까?", en: "How often have you felt nervous and stressed?" } }
+  - { id: q4, text: { ko: "개인적인 문제를 다루는 능력에 대해 자신감을 느꼈습니까?", en: "How often have you felt confident about your ability to handle your personal problems?" }, reverse: true }
+  - { id: q5, text: { ko: "일이 뜻대로 진행되고 있다고 느꼈습니까?", en: "How often have you felt that things were going your way?" }, reverse: true }
+  - { id: q6, text: { ko: "해야 할 일들을 감당해 낼 수 없다고 느꼈습니까?", en: "How often have you found that you could not cope with all the things that you had to do?" } }
+  - { id: q7, text: { ko: "일상생활의 짜증을 잘 다스릴 수 있었습니까?", en: "How often have you been able to control irritations in your life?" }, reverse: true }
+  - { id: q8, text: { ko: "모든 일이 잘 되어가고 있다고 느꼈습니까?", en: "How often have you felt that you were on top of things?" }, reverse: true }
+  - { id: q9, text: { ko: "통제할 수 없는 일 때문에 화가 났습니까?", en: "How often have you been angered because of things that happened that were outside of your control?" } }
+  - { id: q10, text: { ko: "어려운 일이 너무 많이 쌓여서 극복할 수 없다고 느꼈습니까?", en: "How often have you felt difficulties were piling up so high that you could not overcome them?" } }
+
+scoring:
+  positive_items: sum(q1, q2, q3, q6, q9, q10)
+  negative_items: sum(reverse(q4, 4), reverse(q5, 4), reverse(q7, 4), reverse(q8, 4))
+  total: positive_items + negative_items

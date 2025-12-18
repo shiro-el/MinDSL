@@ -1,0 +1,28 @@
+scale: GAD7
+version: "1.0.0"
+
+meta:
+  name: { ko: "범불안장애 척도-7", en: "Generalized Anxiety Disorder 7-item" }
+  category: anxiety
+  time_frame: { ko: "지난 2주 동안", en: "Over the last 2 weeks" }
+  citation: "Spitzer RL, Kroenke K, Williams JB, Lowe B. A brief measure for assessing generalized anxiety disorder. Arch Intern Med. 2006"
+
+response_type: likert(0-3)
+options:
+  - { value: 0, label: { ko: "전혀 아니다", en: "Not at all" } }
+  - { value: 1, label: { ko: "며칠 동안", en: "Several days" } }
+  - { value: 2, label: { ko: "1주일 이상", en: "More than half the days" } }
+  - { value: 3, label: { ko: "거의 매일", en: "Nearly every day" } }
+
+items:
+  - { id: q1, text: { ko: "초조하거나 불안하거나 조마조마하게 느낀다", en: "Feeling nervous, anxious, or on edge" } }
+  - { id: q2, text: { ko: "걱정하는 것을 멈추거나 조절할 수가 없다", en: "Not being able to stop or control worrying" } }
+  - { id: q3, text: { ko: "여러 가지 것들에 대해 걱정을 너무 많이 한다", en: "Worrying too much about different things" } }
+  - { id: q4, text: { ko: "편하게 있기가 어렵다", en: "Trouble relaxing" } }
+  - { id: q5, text: { ko: "너무 안절부절 못해서 가만히 있기가 힘들다", en: "Being so restless that it's hard to sit still" } }
+  - { id: q6, text: { ko: "쉽게 짜증이 나거나 화가 난다", en: "Becoming easily annoyed or irritable" } }
+  - { id: q7, text: { ko: "마치 끔찍한 일이 일어날 것처럼 두렵게 느껴진다", en: "Feeling afraid as if something awful might happen" } }
+
+scoring:
+  total: sum(q1..q7)
+  severity: cut(total, [5, 10, 15], [minimal, mild, moderate, severe])

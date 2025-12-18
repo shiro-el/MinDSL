@@ -1,0 +1,30 @@
+scale: PHQ9
+version: "1.0.0"
+
+meta:
+  name: { ko: "환자 건강 설문지-9", en: "Patient Health Questionnaire-9" }
+  category: depression
+  time_frame: { ko: "지난 2주 동안", en: "Over the last 2 weeks" }
+  citation: "Kroenke K, Spitzer RL, Williams JB. The PHQ-9. J Gen Intern Med. 2001"
+
+response_type: likert(0-3)
+options:
+  - { value: 0, label: { ko: "전혀 아니다", en: "Not at all" } }
+  - { value: 1, label: { ko: "며칠 동안", en: "Several days" } }
+  - { value: 2, label: { ko: "1주일 이상", en: "More than half the days" } }
+  - { value: 3, label: { ko: "거의 매일", en: "Nearly every day" } }
+
+items:
+  - { id: q1, text: { ko: "일을 하는 것에 흥미나 재미가 거의 없음", en: "Little interest or pleasure in doing things" } }
+  - { id: q2, text: { ko: "기분이 가라앉거나 우울하거나 희망이 없음", en: "Feeling down, depressed, or hopeless" } }
+  - { id: q3, text: { ko: "잠들기 어렵거나 자주 깸, 또는 너무 많이 잠", en: "Trouble falling or staying asleep, or sleeping too much" } }
+  - { id: q4, text: { ko: "피곤함을 느끼거나 기력이 거의 없음", en: "Feeling tired or having little energy" } }
+  - { id: q5, text: { ko: "식욕 저하 또는 과식", en: "Poor appetite or overeating" } }
+  - { id: q6, text: { ko: "자신이 나쁜 사람이라는 느낌, 실패자라는 느낌", en: "Feeling bad about yourself — or that you are a failure" } }
+  - { id: q7, text: { ko: "신문이나 TV에 집중하기 어려움", en: "Trouble concentrating on things, such as reading" } }
+  - { id: q8, text: { ko: "다른 사람들이 눈치챌 정도로 움직임이나 말이 느림", en: "Moving or speaking so slowly that other people noticed" } }
+  - { id: q9, text: { ko: "자해에 대한 생각, 차라리 죽는 게 낫겠다는 생각", en: "Thoughts that you would be better off dead, or hurting yourself" } }
+
+scoring:
+  total: sum(q1..q9)
+  severity: cut(total, [5, 10, 15, 20], [minimal, mild, moderate, moderately_severe, severe])

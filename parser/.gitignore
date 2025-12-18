@@ -1,0 +1,27 @@
+# Stack build artifacts
+.stack-work/
+stack.yaml.lock
+
+# Cabal build artifacts
+dist/
+dist-newstyle/
+cabal.project.local
+.cabal-sandbox/
+cabal.sandbox.config
+*.cabal
+
+# Editor files
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build output
+*.hi
+*.o
+*.exe

@@ -1,0 +1,307 @@
+{
+    "functions": [],
+    "items": [
+        {
+            "condition": null,
+            "id": "q1",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "How often have you been upset because of something that happened unexpectedly?",
+                "ko": "예상치 못한 일이 생겨서 기분이 나빠진 적이 얼마나 있었습니까?"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q2",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "How often have you felt that you were unable to control the important things in your life?",
+                "ko": "중요한 일들을 통제할 수 없다고 느낀 적은 얼마나 있었습니까?"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q3",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "How often have you felt nervous and stressed?",
+                "ko": "초조하거나 스트레스가 쌓인다고 느낀 적은 얼마나 있었습니까?"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q4",
+            "required": true,
+            "responseType": null,
+            "reverse": true,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "How often have you felt confident about your ability to handle your personal problems?",
+                "ko": "개인적인 문제를 다루는 능력에 대해 자신감을 느꼈습니까?"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q5",
+            "required": true,
+            "responseType": null,
+            "reverse": true,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "How often have you felt that things were going your way?",
+                "ko": "일이 뜻대로 진행되고 있다고 느꼈습니까?"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q6",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "How often have you found that you could not cope with all the things that you had to do?",
+                "ko": "해야 할 일들을 감당해 낼 수 없다고 느꼈습니까?"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q7",
+            "required": true,
+            "responseType": null,
+            "reverse": true,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "How often have you been able to control irritations in your life?",
+                "ko": "일상생활의 짜증을 잘 다스릴 수 있었습니까?"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q8",
+            "required": true,
+            "responseType": null,
+            "reverse": true,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "How often have you felt that you were on top of things?",
+                "ko": "모든 일이 잘 되어가고 있다고 느꼈습니까?"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q9",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "How often have you been angered because of things that happened that were outside of your control?",
+                "ko": "통제할 수 없는 일 때문에 화가 났습니까?"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q10",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "How often have you felt difficulties were piling up so high that you could not overcome them?",
+                "ko": "어려운 일이 너무 많이 쌓여서 극복할 수 없다고 느꼈습니까?"
+            }
+        }
+    ],
+    "meta": {
+        "authors": [],
+        "category": "stress",
+        "citation": "Cohen S, Kamarck T, Mermelstein R. A global measure of perceived stress. J Health Soc Behav. 1983",
+        "description": {
+            "en": null,
+            "ko": null
+        },
+        "license": null,
+        "name": {
+            "en": "Perceived Stress Scale-10",
+            "ko": "지각된 스트레스 척도-10"
+        },
+        "timeFrame": {
+            "en": "In the last month",
+            "ko": "지난 한 달 동안"
+        }
+    },
+    "name": "PSS10",
+    "responseType": {
+        "config": {
+            "labels": [
+                {
+                    "en": "Never",
+                    "ko": "전혀 없었다"
+                },
+                {
+                    "en": "Almost never",
+                    "ko": "거의 없었다"
+                },
+                {
+                    "en": "Sometimes",
+                    "ko": "때때로 있었다"
+                },
+                {
+                    "en": "Fairly often",
+                    "ko": "자주 있었다"
+                },
+                {
+                    "en": "Very often",
+                    "ko": "매우 자주 있었다"
+                }
+            ],
+            "max": 4,
+            "min": 0,
+            "reverse": false
+        },
+        "type": "likert"
+    },
+    "scoring": {
+        "rules": [
+            {
+                "expression": {
+                    "arguments": [
+                        {
+                            "name": "q1",
+                            "type": "Identifier"
+                        },
+                        {
+                            "name": "q2",
+                            "type": "Identifier"
+                        },
+                        {
+                            "name": "q3",
+                            "type": "Identifier"
+                        },
+                        {
+                            "name": "q6",
+                            "type": "Identifier"
+                        },
+                        {
+                            "name": "q9",
+                            "type": "Identifier"
+                        },
+                        {
+                            "name": "q10",
+                            "type": "Identifier"
+                        }
+                    ],
+                    "name": "sum",
+                    "type": "Call"
+                },
+                "name": "positive_items"
+            },
+            {
+                "expression": {
+                    "arguments": [
+                        {
+                            "arguments": [
+                                {
+                                    "name": "q4",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 4
+                                }
+                            ],
+                            "name": "reverse",
+                            "type": "Call"
+                        },
+                        {
+                            "arguments": [
+                                {
+                                    "name": "q5",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 4
+                                }
+                            ],
+                            "name": "reverse",
+                            "type": "Call"
+                        },
+                        {
+                            "arguments": [
+                                {
+                                    "name": "q7",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 4
+                                }
+                            ],
+                            "name": "reverse",
+                            "type": "Call"
+                        },
+                        {
+                            "arguments": [
+                                {
+                                    "name": "q8",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 4
+                                }
+                            ],
+                            "name": "reverse",
+                            "type": "Call"
+                        }
+                    ],
+                    "name": "sum",
+                    "type": "Call"
+                },
+                "name": "negative_items"
+            },
+            {
+                "expression": {
+                    "left": {
+                        "name": "positive_items",
+                        "type": "Identifier"
+                    },
+                    "operator": "+",
+                    "right": {
+                        "name": "negative_items",
+                        "type": "Identifier"
+                    },
+                    "type": "Binary"
+                },
+                "name": "total"
+            }
+        ],
+        "span": null
+    },
+    "sections": [],
+    "span": null,
+    "subscales": [],
+    "type": "Scale",
+    "version": "1.0.0"
+}

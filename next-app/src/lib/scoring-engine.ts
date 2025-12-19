@@ -151,6 +151,16 @@ const builtins: Record<string, BuiltinFn> = {
    * abs(value) - Absolute value
    */
   abs: (args) => Math.abs(args[0] as number),
+
+  /**
+   * reverse(value, max) - Reverse score: max - value
+   * Used for reverse-scored items in scales like PSS-10
+   */
+  reverse: (args) => {
+    const value = args[0] as number
+    const max = args[1] as number
+    return max - value
+  },
 }
 
 /**

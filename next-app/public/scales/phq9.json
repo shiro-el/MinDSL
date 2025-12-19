@@ -1,0 +1,250 @@
+{
+    "functions": [],
+    "items": [
+        {
+            "condition": null,
+            "id": "q1",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Little interest or pleasure in doing things",
+                "ko": "일을 하는 것에 흥미나 재미가 거의 없음"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q2",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Feeling down, depressed, or hopeless",
+                "ko": "기분이 가라앉거나 우울하거나 희망이 없음"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q3",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Trouble falling or staying asleep, or sleeping too much",
+                "ko": "잠들기 어렵거나 자주 깸, 또는 너무 많이 잠"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q4",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Feeling tired or having little energy",
+                "ko": "피곤함을 느끼거나 기력이 거의 없음"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q5",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Poor appetite or overeating",
+                "ko": "식욕 저하 또는 과식"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q6",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Feeling bad about yourself — or that you are a failure",
+                "ko": "자신이 나쁜 사람이라는 느낌, 실패자라는 느낌"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q7",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Trouble concentrating on things, such as reading",
+                "ko": "신문이나 TV에 집중하기 어려움"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q8",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Moving or speaking so slowly that other people noticed",
+                "ko": "다른 사람들이 눈치챌 정도로 움직임이나 말이 느림"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q9",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Thoughts that you would be better off dead, or hurting yourself",
+                "ko": "자해에 대한 생각, 차라리 죽는 게 낫겠다는 생각"
+            }
+        }
+    ],
+    "meta": {
+        "authors": [],
+        "category": "depression",
+        "citation": "Kroenke K, Spitzer RL, Williams JB. The PHQ-9. J Gen Intern Med. 2001",
+        "description": {
+            "en": null,
+            "ko": null
+        },
+        "license": null,
+        "name": {
+            "en": "Patient Health Questionnaire-9",
+            "ko": "환자 건강 설문지-9"
+        },
+        "timeFrame": {
+            "en": "Over the last 2 weeks",
+            "ko": "지난 2주 동안"
+        }
+    },
+    "name": "PHQ9",
+    "responseType": {
+        "config": {
+            "labels": [
+                {
+                    "en": "Not at all",
+                    "ko": "전혀 아니다"
+                },
+                {
+                    "en": "Several days",
+                    "ko": "며칠 동안"
+                },
+                {
+                    "en": "More than half the days",
+                    "ko": "1주일 이상"
+                },
+                {
+                    "en": "Nearly every day",
+                    "ko": "거의 매일"
+                }
+            ],
+            "max": 3,
+            "min": 0,
+            "reverse": false
+        },
+        "type": "likert"
+    },
+    "scoring": {
+        "rules": [
+            {
+                "expression": {
+                    "arguments": [
+                        {
+                            "end": "q9",
+                            "start": "q1",
+                            "type": "Range"
+                        }
+                    ],
+                    "name": "sum",
+                    "type": "Call"
+                },
+                "name": "total"
+            },
+            {
+                "expression": {
+                    "arguments": [
+                        {
+                            "name": "total",
+                            "type": "Identifier"
+                        },
+                        {
+                            "elements": [
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 5
+                                },
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 10
+                                },
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 15
+                                },
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 20
+                                }
+                            ],
+                            "type": "Array"
+                        },
+                        {
+                            "elements": [
+                                {
+                                    "name": "minimal",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "name": "mild",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "name": "moderate",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "name": "moderately_severe",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "name": "severe",
+                                    "type": "Identifier"
+                                }
+                            ],
+                            "type": "Array"
+                        }
+                    ],
+                    "name": "cut",
+                    "type": "Call"
+                },
+                "name": "severity"
+            }
+        ],
+        "span": null
+    },
+    "sections": [],
+    "span": null,
+    "subscales": [],
+    "type": "Scale",
+    "version": "1.0.0"
+}

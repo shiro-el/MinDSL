@@ -2,17 +2,16 @@
 {-# LANGUAGE RecordWildCards #-}
 
 -- | CLI for MinDSL parser
-module Main where
+module Main (main) where
 
 import qualified Data.ByteString.Lazy.Char8 as BL
-import Data.Text (Text)
 import qualified Data.Text.IO as TIO
 import Options.Applicative
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Megaparsec (errorBundlePretty)
 
-import MinDSL.Parser (parseScale, parseScaleFile)
+import MinDSL.Parser (parseScale)
 import MinDSL.JSON (encodeScale)
 
 -- =============================================================================

@@ -16,14 +16,13 @@ module MinDSL.Parser
 
 import Control.Monad (void)
 import Control.Monad.Combinators.Expr
-import Data.Maybe (fromMaybe, catMaybes)
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Data.Void (Void)
 import Text.Megaparsec
 import Text.Megaparsec.Char
-import qualified Text.Megaparsec.Char.Lexer as L
 
 import MinDSL.AST
 import MinDSL.Lexer
@@ -56,9 +55,10 @@ scaleP = do
 
   scaleVersion <- versionP
   scaleMeta <- metaP
-  scaleResponseType <- responseTypeP
-  -- Skip optional standalone options section (labels for likert)
-  void $ optional optionsSectionP
+  baseResponseType <- responseTypeP
+  -- Parse optional standalone options section and merge with likert config
+  maybeOptions <- optional optionsSectionP
+  let scaleResponseType = mergeOptionsIntoResponseType baseResponseType maybeOptions
   scaleItems <- itemsP
   scaleSubscales <- fromMaybe [] <$> optional subscalesP
   scaleSections <- fromMaybe [] <$> optional sectionsP
@@ -69,6 +69,13 @@ scaleP = do
     { scaleSpan = Nothing
     , ..
     }
+
+-- | Merge standalone options into LikertResponse as labels
+mergeOptionsIntoResponseType :: ResponseType -> Maybe [Option] -> ResponseType
+mergeOptionsIntoResponseType rt Nothing = rt
+mergeOptionsIntoResponseType (LikertResponse cfg) (Just opts) =
+  LikertResponse cfg { likertLabels = Just (map optionLabel opts) }
+mergeOptionsIntoResponseType rt _ = rt
 
 -- | Version parser
 versionP :: Parser Text

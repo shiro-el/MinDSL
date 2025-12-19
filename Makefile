@@ -41,3 +41,9 @@ repl:
 .PHONY: parse
 parse:
 	cd parser && stack exec mindsl-parser -- -i $(FILE)
+
+# Generate TypeScript types from Haskell AST
+.PHONY: gen-types
+gen-types:
+	cd parser && stack exec mindsl-parser -- gen-types -o ../next-app/src/types/mindsl.ts
+	@echo "Generated: next-app/src/types/mindsl.ts"

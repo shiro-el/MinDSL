@@ -1,54 +1,123 @@
 /**
  * MinDSL TypeScript Type Definitions
- * Generated from parser/src/MinDSL/AST.hs JSON output
+ *
+ * AUTO-GENERATED from Haskell AST
+ * DO NOT EDIT MANUALLY - Run 'mindsl-parser gen-types' to regenerate
  */
 
 // =============================================================================
-// Core Types
+// Core Types (auto-generated from Haskell via aeson-typescript)
 // =============================================================================
 
-export interface LocalizedText {
-  ko: string | null
-  en: string | null
+export type SourcePos = ISourcePos;
+
+export interface ISourcePos {
+  line: number;
+  column: number;
+  offset: number;
 }
 
-export interface SourcePos {
-  line: number
-  column: number
-  offset: number
+export type SourceSpan = ISourceSpan;
+
+export interface ISourceSpan {
+  start: SourcePos;
+  end: SourcePos;
 }
 
-export interface SourceSpan {
-  start: SourcePos
-  end: SourcePos
+export type LocalizedText = ILocalizedText;
+
+export interface ILocalizedText {
+  ko: string | null;
+  en: string | null;
+}
+
+export type LikertConfig = ILikertConfig;
+
+export interface ILikertConfig {
+  min: number;
+  max: number;
+  labels: LocalizedText[] | null;
+  reverse: boolean;
+}
+
+export type Option = IOption;
+
+export interface IOption {
+  value: number;
+  label: LocalizedText;
+}
+
+export type Meta = IMeta;
+
+export interface IMeta {
+  name: LocalizedText;
+  description: LocalizedText | null;
+  category: string | null;
+  timeFrame: LocalizedText | null;
+  authors: string[];
+  citation: string | null;
+  license: string | null;
+}
+
+export type Item = IItem;
+
+export interface IItem {
+  id: string;
+  text: LocalizedText;
+  responseType: ResponseType | null;
+  required: boolean;
+  subscale: string | null;
+  reverse: boolean;
+  condition: Expression | null;
+  span: SourceSpan | null;
+}
+
+export type Subscale = ISubscale;
+
+export interface ISubscale {
+  name: string;
+  label: LocalizedText;
+  items: string[];
+}
+
+export type Section = ISection;
+
+export interface ISection {
+  name: string;
+  label: LocalizedText;
+  items: string[];
+}
+
+export type Function = IFunction;
+
+export interface IFunction {
+  name: string;
+  params: string[];
+  body: Statement[];
+  span: SourceSpan | null;
 }
 
 // =============================================================================
-// Response Types
+// AST Types (matching custom ToJSON in MinDSL.JSON)
 // =============================================================================
 
-export interface LikertConfig {
-  min: number
-  max: number
-  labels: LocalizedText[] | null
-  reverse: boolean
-}
-
-export interface Option {
-  value: number
-  label: LocalizedText
-}
-
+// ResponseType (custom ToJSON)
 export type ResponseType =
   | { type: "likert"; config: LikertConfig }
   | { type: "options"; options: Option[] }
   | { type: "text" }
   | { type: "numeric"; min: number | null; max: number | null }
 
-// =============================================================================
-// Expression AST
-// =============================================================================
+// BinaryOp (symbolic strings)
+export type BinaryOp =
+  | "+" | "-" | "*" | "/" | "%"
+  | "==" | "!=" | "<" | ">" | "<=" | ">="
+  | "and" | "or"
 
+// UnaryOp (symbolic strings)
+export type UnaryOp = "-" | "not"
+
+// Expression AST
 export type Expression =
   | { type: "LiteralInt"; value: number }
   | { type: "LiteralFloat"; value: number }
@@ -65,17 +134,13 @@ export type Expression =
   | { type: "Member"; expression: Expression; member: string }
   | { type: "Conditional"; condition: Expression; then: Expression; else: Expression }
 
-export type BinaryOp =
-  | "+" | "-" | "*" | "/" | "%"
-  | "==" | "!=" | "<" | ">" | "<=" | ">="
-  | "and" | "or"
+// ElifBranch helper
+export interface ElifBranch {
+  condition: Expression
+  body: Statement[]
+}
 
-export type UnaryOp = "-" | "not"
-
-// =============================================================================
 // Statement AST
-// =============================================================================
-
 export type Statement =
   | { type: "ExprStmt"; expression: Expression }
   | { type: "AssignStmt"; name: string; expression: Expression }
@@ -83,69 +148,19 @@ export type Statement =
   | { type: "ForStmt"; variable: string; iterable: Expression; body: Statement[] }
   | { type: "ReturnStmt"; expression: Expression }
 
-export interface ElifBranch {
-  condition: Expression
-  body: Statement[]
-}
-
-// =============================================================================
-// Scale Components
-// =============================================================================
-
-export interface Item {
-  id: string
-  text: LocalizedText
-  responseType: ResponseType | null
-  required: boolean
-  subscale: string | null
-  reverse: boolean
-  condition: Expression | null
-  span: SourceSpan | null
-}
-
-export interface Subscale {
-  name: string
-  label: LocalizedText
-  items: string[]
-}
-
-export interface Section {
-  name: string
-  label: LocalizedText
-  items: string[]
-}
-
-export interface Function {
-  name: string
-  params: string[]
-  body: Statement[]
-  span: SourceSpan | null
-}
-
+// ScoringRule helper
 export interface ScoringRule {
   name: string
   expression: Expression
 }
 
+// Scoring
 export interface Scoring {
   rules: ScoringRule[]
   span: SourceSpan | null
 }
 
-export interface Meta {
-  name: LocalizedText
-  description: LocalizedText | null
-  category: string | null
-  timeFrame: LocalizedText | null
-  authors: string[]
-  citation: string | null
-  license: string | null
-}
-
-// =============================================================================
-// Top-level Scale
-// =============================================================================
-
+// Scale (top-level)
 export interface Scale {
   type: "Scale"
   name: string
@@ -159,6 +174,7 @@ export interface Scale {
   scoring: Scoring
   span: SourceSpan | null
 }
+
 
 // =============================================================================
 // Runtime Types
@@ -174,7 +190,7 @@ export type ScoringResults = Record<string, number | string>
 export type Language = "ko" | "en"
 
 /** Helper to get localized text */
-export function getLocalizedText(text: LocalizedText | null, lang: Language): string {
+export function getLocalizedText(text: ILocalizedText | null, lang: Language): string {
   if (!text) return ""
   return text[lang] ?? text.ko ?? text.en ?? ""
 }

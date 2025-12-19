@@ -32,6 +32,8 @@ library:
     - MinDSL.Lexer
     - MinDSL.Parser
     - MinDSL.JSON
+    - MinDSL.Options
+    - MinDSL.TypeScript
   dependencies:
     - base >= 4.7 && < 5
     - text
@@ -39,6 +41,7 @@ library:
     - parser-combinators
     - aeson
     - aeson-pretty
+    - aeson-typescript
     - bytestring
     - containers
     - mtl

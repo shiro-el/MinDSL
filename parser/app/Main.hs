@@ -13,10 +13,15 @@ import Text.Megaparsec (errorBundlePretty)
 
 import MinDSL.Parser (parseScale)
 import MinDSL.JSON (encodeScale)
+import MinDSL.TypeScript (generateTypeScriptFile)
 
 -- =============================================================================
 -- CLI Options
 -- =============================================================================
+
+data Command
+  = ParseCommand Options
+  | GenTypesCommand (Maybe FilePath)  -- Output file path
 
 data Options = Options
   { optInput  :: InputSource
@@ -39,6 +44,23 @@ data OutputFormat
 -- =============================================================================
 -- Option Parsers
 -- =============================================================================
+
+commandParser :: Parser Command
+commandParser = subparser
+  ( command "parse" (info (ParseCommand <$> optionsParser <**> helper)
+      (progDesc "Parse a .mindsl file to JSON"))
+  <> command "gen-types" (info (GenTypesCommand <$> genTypesOutputParser <**> helper)
+      (progDesc "Generate TypeScript type definitions from AST"))
+  )
+  <|> (ParseCommand <$> optionsParser)  -- Default to parse command
+
+genTypesOutputParser :: Parser (Maybe FilePath)
+genTypesOutputParser = optional $ strOption
+  ( long "output"
+  <> short 'o'
+  <> metavar "FILE"
+  <> help "Output TypeScript file (default: stdout)"
+  )
 
 optionsParser :: Parser Options
 optionsParser = Options
@@ -80,14 +102,25 @@ formatParser =
 
 main :: IO ()
 main = do
-  opts <- execParser optsInfo
-  runParser opts
+  cmd <- execParser optsInfo
+  runCommand cmd
   where
-    optsInfo = info (optionsParser <**> helper)
+    optsInfo = info (commandParser <**> helper)
       ( fullDesc
       <> progDesc "Parse MinDSL files and output JSON AST"
-      <> header "mindsl-parser - MinDSL parser"
+      <> header "mindsl-parser - MinDSL parser and type generator"
       )
+
+runCommand :: Command -> IO ()
+runCommand (ParseCommand opts) = runParser opts
+runCommand (GenTypesCommand outputPath) = runGenTypes outputPath
+
+runGenTypes :: Maybe FilePath -> IO ()
+runGenTypes outputPath = do
+  let tsContent = generateTypeScriptFile
+  case outputPath of
+    Just path -> TIO.writeFile path tsContent
+    Nothing   -> TIO.putStrLn tsContent
 
 runParser :: Options -> IO ()
 runParser Options{..} = do

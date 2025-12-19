@@ -1,7 +1,11 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
 -- | JSON serialization for MinDSL AST using Aeson
+--
+-- This module uses Generic deriving with shared options from MinDSL.Options
+-- to ensure consistency between JSON output and TypeScript type generation.
 module MinDSL.JSON
   ( -- * Encoding
     encodeScale
@@ -10,13 +14,14 @@ module MinDSL.JSON
   , ToJSON(..)
   ) where
 
-import Data.Aeson (ToJSON(..), object, (.=))
+import Data.Aeson (ToJSON(..), genericToJSON, object, (.=))
 import qualified Data.Aeson as A
 import Data.Aeson.Encode.Pretty (encodePretty)
 import qualified Data.ByteString.Lazy as BL
 import Data.Text (Text)
 
 import MinDSL.AST
+import MinDSL.Options (minDSLOptions)
 
 -- =============================================================================
 -- Encoding Functions
@@ -27,22 +32,44 @@ encodeScale :: Scale -> BL.ByteString
 encodeScale = encodePretty
 
 -- =============================================================================
--- ToJSON Instances
+-- ToJSON Instances (Generic deriving with shared options)
 -- =============================================================================
 
 instance ToJSON SourcePos where
-  toJSON SourcePos{..} = object
-    [ "line" .= posLine
-    , "column" .= posColumn
-    , "offset" .= posOffset
-    ]
+  toJSON = genericToJSON minDSLOptions
 
 instance ToJSON SourceSpan where
-  toJSON SourceSpan{..} = object
-    [ "start" .= spanStart
-    , "end" .= spanEnd
-    ]
+  toJSON = genericToJSON minDSLOptions
 
+instance ToJSON LocalizedText where
+  toJSON = genericToJSON minDSLOptions
+
+instance ToJSON LikertConfig where
+  toJSON = genericToJSON minDSLOptions
+
+instance ToJSON Option where
+  toJSON = genericToJSON minDSLOptions
+
+instance ToJSON Meta where
+  toJSON = genericToJSON minDSLOptions
+
+instance ToJSON Item where
+  toJSON = genericToJSON minDSLOptions
+
+instance ToJSON Subscale where
+  toJSON = genericToJSON minDSLOptions
+
+instance ToJSON Section where
+  toJSON = genericToJSON minDSLOptions
+
+instance ToJSON Function where
+  toJSON = genericToJSON minDSLOptions
+
+-- =============================================================================
+-- Custom ToJSON for types needing special handling
+-- =============================================================================
+
+-- | Scale needs a "type": "Scale" field for identification
 instance ToJSON Scale where
   toJSON Scale{..} = object
     [ "type" .= ("Scale" :: Text)
@@ -58,23 +85,7 @@ instance ToJSON Scale where
     , "span" .= scaleSpan
     ]
 
-instance ToJSON Meta where
-  toJSON Meta{..} = object
-    [ "name" .= metaName
-    , "description" .= metaDescription
-    , "category" .= metaCategory
-    , "timeFrame" .= metaTimeFrame
-    , "authors" .= metaAuthors
-    , "citation" .= metaCitation
-    , "license" .= metaLicense
-    ]
-
-instance ToJSON LocalizedText where
-  toJSON LocalizedText{..} = object
-    [ "ko" .= textKo
-    , "en" .= textEn
-    ]
-
+-- | ResponseType uses custom tag names matching the TypeScript types
 instance ToJSON ResponseType where
   toJSON (LikertResponse cfg) = object
     [ "type" .= ("likert" :: Text)
@@ -93,54 +104,7 @@ instance ToJSON ResponseType where
     , "max" .= maxVal
     ]
 
-instance ToJSON LikertConfig where
-  toJSON LikertConfig{..} = object
-    [ "min" .= likertMin
-    , "max" .= likertMax
-    , "labels" .= likertLabels
-    , "reverse" .= likertReverse
-    ]
-
-instance ToJSON Option where
-  toJSON Option{..} = object
-    [ "value" .= optionValue
-    , "label" .= optionLabel
-    ]
-
-instance ToJSON Item where
-  toJSON Item{..} = object
-    [ "id" .= itemId
-    , "text" .= itemText
-    , "responseType" .= itemResponseType
-    , "required" .= itemRequired
-    , "subscale" .= itemSubscale
-    , "reverse" .= itemReverse
-    , "condition" .= itemCondition
-    , "span" .= itemSpan
-    ]
-
-instance ToJSON Subscale where
-  toJSON Subscale{..} = object
-    [ "name" .= subscaleName
-    , "label" .= subscaleLabel
-    , "items" .= subscaleItems
-    ]
-
-instance ToJSON Section where
-  toJSON Section{..} = object
-    [ "name" .= sectionName
-    , "label" .= sectionLabel
-    , "items" .= sectionItems
-    ]
-
-instance ToJSON Function where
-  toJSON Function{..} = object
-    [ "name" .= funcName
-    , "params" .= funcParams
-    , "body" .= funcBody
-    , "span" .= funcSpan
-    ]
-
+-- | Scoring has a custom structure with rules as array of {name, expression}
 instance ToJSON Scoring where
   toJSON Scoring{..} = object
     [ "rules" .= map ruleToJSON scoringRules
@@ -152,6 +116,7 @@ instance ToJSON Scoring where
         , "expression" .= expr
         ]
 
+-- | Statement uses custom field names for clarity
 instance ToJSON Statement where
   toJSON (ExprStmt expr) = object
     [ "type" .= ("ExprStmt" :: Text)
@@ -185,6 +150,7 @@ instance ToJSON Statement where
     , "expression" .= expr
     ]
 
+-- | Expression uses custom field names matching TypeScript expectations
 instance ToJSON Expression where
   toJSON (LiteralInt n) = object
     [ "type" .= ("LiteralInt" :: Text)
@@ -251,6 +217,7 @@ instance ToJSON Expression where
     , "else" .= elseExpr
     ]
 
+-- | BinaryOp uses symbolic string representation for readability
 instance ToJSON BinaryOp where
   toJSON Add = A.String "+"
   toJSON Sub = A.String "-"
@@ -266,6 +233,7 @@ instance ToJSON BinaryOp where
   toJSON And = A.String "and"
   toJSON Or = A.String "or"
 
+-- | UnaryOp uses symbolic string representation for readability
 instance ToJSON UnaryOp where
   toJSON Neg = A.String "-"
   toJSON Not = A.String "not"

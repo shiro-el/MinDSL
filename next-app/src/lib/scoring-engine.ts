@@ -7,6 +7,7 @@ import type {
   Expression,
   Scale,
   Item,
+  Subscale,
   Responses,
   ScoringResults,
 } from "@/types/mindsl"
@@ -18,6 +19,9 @@ import type {
 interface EvalContext {
   responses: Responses
   items: Item[]
+  subscales: Subscale[]
+  /** Map of subscale name -> item IDs for quick lookup */
+  subscaleItems: Record<string, string[]>
   computed: Record<string, number | string>
 }
 
@@ -151,24 +155,51 @@ const builtins: Record<string, BuiltinFn> = {
 
 /**
  * Flatten argument to array of numbers
+ * Handles: numbers, item IDs, subscale names, and arrays of these
  */
 function flattenToNumbers(
   arg: number | string | number[] | string[],
   ctx: EvalContext
 ): number[] {
   if (Array.isArray(arg)) {
-    return arg.map((item) => {
-      if (typeof item === "number") return item
-      // Item ID - look up response
-      const response = ctx.responses[item]
-      return typeof response === "number" ? response : 0
+    return arg.flatMap((item) => {
+      if (typeof item === "number") return [item]
+      // Could be item ID or subscale name
+      return resolveToNumbers(item, ctx)
     })
   }
   if (typeof arg === "number") {
     return [arg]
   }
-  // Single item ID
-  const response = ctx.responses[arg]
+  // Single item ID or subscale name
+  return resolveToNumbers(arg, ctx)
+}
+
+/**
+ * Resolve a string identifier to numbers
+ * Checks: subscale name, item subscale field, item ID
+ */
+function resolveToNumbers(name: string, ctx: EvalContext): number[] {
+  // 1. Check if it's a subscale name defined in subscales section
+  if (name in ctx.subscaleItems) {
+    const itemIds = ctx.subscaleItems[name]
+    return itemIds.map((id) => {
+      const response = ctx.responses[id]
+      return typeof response === "number" ? response : 0
+    })
+  }
+
+  // 2. Check if items have this subscale in their subscale field
+  const itemsWithSubscale = ctx.items.filter((item) => item.subscale === name)
+  if (itemsWithSubscale.length > 0) {
+    return itemsWithSubscale.map((item) => {
+      const response = ctx.responses[item.id]
+      return typeof response === "number" ? response : 0
+    })
+  }
+
+  // 3. It's a single item ID
+  const response = ctx.responses[name]
   return [typeof response === "number" ? response : 0]
 }
 
@@ -321,15 +352,46 @@ function evaluateBinary(
 // =============================================================================
 
 /**
+ * Build subscale items lookup from Scale definition
+ */
+function buildSubscaleItemsMap(scale: Scale): Record<string, string[]> {
+  const map: Record<string, string[]> = {}
+
+  // 1. From subscales section (explicit subscale definitions)
+  for (const subscale of scale.subscales) {
+    map[subscale.name] = subscale.items
+  }
+
+  // 2. From items with subscale field (implicit subscale definitions)
+  for (const item of scale.items) {
+    if (item.subscale) {
+      if (!map[item.subscale]) {
+        map[item.subscale] = []
+      }
+      // Only add if not already in the list (avoid duplicates)
+      if (!map[item.subscale].includes(item.id)) {
+        map[item.subscale].push(item.id)
+      }
+    }
+  }
+
+  return map
+}
+
+/**
  * Calculate all scoring rules for a scale given responses
  */
 export function calculateScores(
   scale: Scale,
   responses: Responses
 ): ScoringResults {
+  const subscaleItems = buildSubscaleItemsMap(scale)
+
   const ctx: EvalContext = {
     responses,
     items: scale.items,
+    subscales: scale.subscales,
+    subscaleItems,
     computed: {},
   }
 

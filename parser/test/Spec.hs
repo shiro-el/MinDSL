@@ -144,6 +144,30 @@ expressionSpec = do
     it "parses not" $ do
       parse expressionP "" "not true" `shouldParse` Unary Not (LiteralBool True)
 
+  describe "ternary operations" $ do
+    it "parses simple ternary" $ do
+      parse expressionP "" "true ? 1 : 2" `shouldParse`
+        Conditional (LiteralBool True) (LiteralInt 1) (LiteralInt 2)
+
+    it "parses ternary with comparison" $ do
+      parse expressionP "" "x > 5 ? \"high\" : \"low\"" `shouldParse`
+        Conditional
+          (Binary Gt (Identifier "x") (LiteralInt 5))
+          (LiteralString "high")
+          (LiteralString "low")
+
+    it "parses nested ternary (right-associative)" $ do
+      parse expressionP "" "a ? 1 : b ? 2 : 3" `shouldParse`
+        Conditional (Identifier "a") (LiteralInt 1)
+          (Conditional (Identifier "b") (LiteralInt 2) (LiteralInt 3))
+
+    it "parses ternary with function calls" $ do
+      parse expressionP "" "count(all) > 5 ? sum(q1..q9) : 0" `shouldParse`
+        Conditional
+          (Binary Gt (Call "count" [Identifier "all"]) (LiteralInt 5))
+          (Call "sum" [Range "q1" "q9"])
+          (LiteralInt 0)
+
 -- =============================================================================
 -- Scale Parser Tests
 -- =============================================================================

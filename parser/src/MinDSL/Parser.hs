@@ -621,7 +621,17 @@ exprStmtP = ExprStmt <$> expressionP
 -- =============================================================================
 
 expressionP :: Parser Expression
-expressionP = makeExprParser termP operatorTable
+expressionP = do
+  expr <- makeExprParser termP operatorTable
+  -- Ternary operator (lowest precedence, right-associative)
+  optional (ternaryTail expr) >>= maybe (return expr) return
+  where
+    ternaryTail cond = do
+      void $ symbol "?"
+      thenExpr <- expressionP
+      void $ symbol ":"
+      elseExpr <- expressionP
+      return $ Conditional cond thenExpr elseExpr
 
 operatorTable :: [[Operator Parser Expression]]
 operatorTable =

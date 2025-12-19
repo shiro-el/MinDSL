@@ -83,11 +83,11 @@ symbol = L.symbol sc
 
 -- | Integer literal
 integer :: Parser Int
-integer = lexeme L.decimal
+integer = lexeme L.decimal <?> "integer"
 
 -- | Float literal
 float :: Parser Double
-float = lexeme L.float
+float = lexeme L.float <?> "decimal number"
 
 -- | Number (int or float) - returns Either Int Double
 number :: Parser (Either Int Double)
@@ -95,10 +95,10 @@ number = lexeme $ try (Right <$> L.float) <|> (Left <$> L.decimal)
 
 -- | String literal (single or double quoted)
 stringLiteral :: Parser Text
-stringLiteral = lexeme $ do
+stringLiteral = (lexeme $ do
   quote <- char '"' <|> char '\''
   content <- manyTill L.charLiteral (char quote)
-  return $ T.pack content
+  return $ T.pack content) <?> "string literal (\"...\" or '...')"
 
 -- | Multi-line string (pipe syntax)
 multilineString :: Parser Text
@@ -135,13 +135,13 @@ reservedWords =
 
 -- | Identifier parser
 identifier :: Parser Text
-identifier = lexeme $ try $ do
+identifier = (lexeme $ try $ do
   first <- letterChar <|> char '_'
   rest <- many (alphaNumChar <|> char '_')
   let ident = T.pack (first : rest)
   if ident `elem` reservedWords
-    then fail $ "Reserved word: " ++ T.unpack ident
-    else return ident
+    then fail $ "'" ++ T.unpack ident ++ "' is a reserved word, cannot be used as identifier"
+    else return ident) <?> "identifier"
 
 -- | Keyword parser (case insensitive)
 keyword :: Text -> Parser ()

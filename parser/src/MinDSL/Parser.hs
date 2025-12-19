@@ -47,9 +47,9 @@ parseScaleFile path = do
 
 scaleP :: Parser Scale
 scaleP = do
-  keyword "scale"
-  void colon
-  scaleName <- identifier
+  keyword "scale" <?> "scale definition (scale: NAME)"
+  void colon <?> "':' after 'scale'"
+  scaleName <- identifier <?> "scale name"
   void $ optional eol
   scn
 
@@ -80,9 +80,9 @@ mergeOptionsIntoResponseType rt _ = rt
 -- | Version parser
 versionP :: Parser Text
 versionP = do
-  keyword "version"
-  void colon
-  v <- stringLiteral <|> lexeme (T.pack <$> some (alphaNumChar <|> char '.'))
+  keyword "version" <?> "version field (version: \"X.Y.Z\")"
+  void colon <?> "':' after 'version'"
+  v <- (stringLiteral <|> lexeme (T.pack <$> some (alphaNumChar <|> char '.'))) <?> "version string"
   void $ optional eol
   scn
   return v
@@ -93,8 +93,8 @@ versionP = do
 
 metaP :: Parser Meta
 metaP = do
-  keyword "meta"
-  void colon
+  keyword "meta" <?> "meta section"
+  void colon <?> "':' after 'meta'"
   void $ optional eol
   scn
 
@@ -187,9 +187,9 @@ findTextList key fields = case lookup key fields of
 
 responseTypeP :: Parser ResponseType
 responseTypeP = do
-  keyword "response_type"
-  void colon
-  rt <- responseTypeValueP
+  keyword "response_type" <?> "response_type section"
+  void colon <?> "':' after 'response_type'"
+  rt <- responseTypeValueP <?> "response type (likert, options, text, numeric)"
   void $ optional eol
   scn
   return rt
@@ -204,12 +204,12 @@ responseTypeValueP = choice
 
 likertResponseP :: Parser ResponseType
 likertResponseP = do
-  void $ lexeme (string "likert")
-  void lparen
-  minVal <- integer
-  void $ char '-'
-  maxVal <- integer
-  void rparen
+  void (lexeme (string "likert") <?> "'likert'")
+  void lparen <?> "'(' after 'likert'"
+  minVal <- integer <?> "minimum value"
+  void (char '-') <?> "'-' separator (e.g., likert(0-4))"
+  maxVal <- integer <?> "maximum value"
+  void rparen <?> "')' to close likert range"
   -- Optional labels
   labels <- optional $ do
     void comma
@@ -291,14 +291,14 @@ numericResponseP = do
 
 itemsP :: Parser [Item]
 itemsP = do
-  keyword "items"
-  void colon
+  keyword "items" <?> "items section"
+  void colon <?> "':' after 'items'"
   void $ optional eol
   scn
   many $ try $ do
-    void $ char '-'
+    void (char '-') <?> "'-' for list item"
     sc
-    item <- itemP
+    item <- itemP <?> "item definition { id: ..., text: ... }"
     void $ optional eol
     scn
     return item
@@ -365,11 +365,11 @@ lookupItemBool key fields def = case lookup key fields of
 
 subscalesP :: Parser [Subscale]
 subscalesP = do
-  keyword "subscales"
-  void colon
+  keyword "subscales" <?> "subscales section"
+  void colon <?> "':' after 'subscales'"
   void $ optional eol
   scn
-  many $ try subscaleP
+  many (try subscaleP <?> "subscale definition")
 
 subscaleP :: Parser Subscale
 subscaleP = do
@@ -509,11 +509,11 @@ functionP = do
 
 scoringP :: Parser Scoring
 scoringP = do
-  keyword "scoring"
-  void colon
+  keyword "scoring" <?> "scoring section"
+  void colon <?> "':' after 'scoring'"
   void $ optional eol
   scn
-  rules <- many $ try scoringRuleP
+  rules <- many (try scoringRuleP <?> "scoring rule")
   return Scoring
     { scoringRules = rules
     , scoringSpan = Nothing
@@ -521,9 +521,9 @@ scoringP = do
 
 scoringRuleP :: Parser (Text, Expression)
 scoringRuleP = do
-  name <- identifier
-  void colon
-  expr <- expressionP
+  name <- identifier <?> "rule name"
+  void colon <?> "':' after rule name"
+  expr <- expressionP <?> "scoring expression"
   void $ optional eol
   scn
   return (name, expr)
@@ -673,18 +673,18 @@ postfixOps expr = do
     [ try $ do  -- Function call
         void lparen
         args <- expressionP `sepBy` comma
-        void rparen
+        void rparen <?> "')' to close function call"
         case expr of
           Identifier name -> return $ Call name args
-          _ -> fail "Expected function name"
+          _ -> fail "function name expected before '('"
     , try $ do  -- Index access
         void lbracket
-        idx <- expressionP
-        void rbracket
+        idx <- expressionP <?> "index expression"
+        void rbracket <?> "']' to close index"
         return $ Index expr idx
     , try $ do  -- Member access
         void dot
-        member <- identifier
+        member <- identifier <?> "member name after '.'"
         return $ Member expr member
     ]
   case next of
@@ -696,26 +696,26 @@ atomP = choice
   [ try $ do  -- Range expression: q1..q9
       start <- identifier
       void dotdot
-      end <- identifier
+      end <- identifier <?> "end identifier in range (e.g., q1..q9)"
       return $ Range start end
   , try callOrIdentP  -- Function call or identifier
   , try $ LiteralFloat <$> float
   , try $ LiteralInt <$> integer
-  , LiteralString <$> stringLiteral
+  , LiteralString <$> stringLiteral <?> "string literal"
   , LiteralBool True <$ keyword "true"
   , LiteralBool False <$ keyword "false"
   , LiteralNull <$ keyword "null"
-  , arrayP
-  , parenP
-  ]
+  , arrayP <?> "array [...]"
+  , parenP <?> "parenthesized expression"
+  ] <?> "expression"
 
 callOrIdentP :: Parser Expression
 callOrIdentP = do
-  name <- identifier
+  name <- identifier <?> "identifier"
   next <- optional $ do
     void lparen
     args <- expressionP `sepBy` comma
-    void rparen
+    void rparen <?> "')' to close function arguments"
     return args
   case next of
     Just args -> return $ Call name args
@@ -725,12 +725,12 @@ arrayP :: Parser Expression
 arrayP = do
   void lbracket
   elems <- expressionP `sepBy` comma
-  void rbracket
+  void rbracket <?> "']' to close array"
   return $ Array elems
 
 parenP :: Parser Expression
 parenP = do
   void lparen
   expr <- expressionP
-  void rparen
+  void rparen <?> "')' to close parentheses"
   return expr

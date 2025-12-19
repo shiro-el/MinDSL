@@ -1,0 +1,216 @@
+{
+    "functions": [],
+    "items": [
+        {
+            "condition": null,
+            "id": "q1",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Feeling nervous, anxious, or on edge",
+                "ko": "초조하거나 불안하거나 조마조마하게 느낀다"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q2",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Not being able to stop or control worrying",
+                "ko": "걱정하는 것을 멈추거나 조절할 수가 없다"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q3",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Worrying too much about different things",
+                "ko": "여러 가지 것들에 대해 걱정을 너무 많이 한다"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q4",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Trouble relaxing",
+                "ko": "편하게 있기가 어렵다"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q5",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Being so restless that it's hard to sit still",
+                "ko": "너무 안절부절 못해서 가만히 있기가 힘들다"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q6",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Becoming easily annoyed or irritable",
+                "ko": "쉽게 짜증이 나거나 화가 난다"
+            }
+        },
+        {
+            "condition": null,
+            "id": "q7",
+            "required": true,
+            "responseType": null,
+            "reverse": false,
+            "span": null,
+            "subscale": null,
+            "text": {
+                "en": "Feeling afraid as if something awful might happen",
+                "ko": "마치 끔찍한 일이 일어날 것처럼 두렵게 느껴진다"
+            }
+        }
+    ],
+    "meta": {
+        "authors": [],
+        "category": "anxiety",
+        "citation": "Spitzer RL, Kroenke K, Williams JB, Lowe B. A brief measure for assessing generalized anxiety disorder. Arch Intern Med. 2006",
+        "description": {
+            "en": null,
+            "ko": null
+        },
+        "license": null,
+        "name": {
+            "en": "Generalized Anxiety Disorder 7-item",
+            "ko": "범불안장애 척도-7"
+        },
+        "timeFrame": {
+            "en": "Over the last 2 weeks",
+            "ko": "지난 2주 동안"
+        }
+    },
+    "name": "GAD7",
+    "responseType": {
+        "config": {
+            "labels": [
+                {
+                    "en": "Not at all",
+                    "ko": "전혀 아니다"
+                },
+                {
+                    "en": "Several days",
+                    "ko": "며칠 동안"
+                },
+                {
+                    "en": "More than half the days",
+                    "ko": "1주일 이상"
+                },
+                {
+                    "en": "Nearly every day",
+                    "ko": "거의 매일"
+                }
+            ],
+            "max": 3,
+            "min": 0,
+            "reverse": false
+        },
+        "type": "likert"
+    },
+    "scoring": {
+        "rules": [
+            {
+                "expression": {
+                    "arguments": [
+                        {
+                            "end": "q7",
+                            "start": "q1",
+                            "type": "Range"
+                        }
+                    ],
+                    "name": "sum",
+                    "type": "Call"
+                },
+                "name": "total"
+            },
+            {
+                "expression": {
+                    "arguments": [
+                        {
+                            "name": "total",
+                            "type": "Identifier"
+                        },
+                        {
+                            "elements": [
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 5
+                                },
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 10
+                                },
+                                {
+                                    "type": "LiteralInt",
+                                    "value": 15
+                                }
+                            ],
+                            "type": "Array"
+                        },
+                        {
+                            "elements": [
+                                {
+                                    "name": "minimal",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "name": "mild",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "name": "moderate",
+                                    "type": "Identifier"
+                                },
+                                {
+                                    "name": "severe",
+                                    "type": "Identifier"
+                                }
+                            ],
+                            "type": "Array"
+                        }
+                    ],
+                    "name": "cut",
+                    "type": "Call"
+                },
+                "name": "severity"
+            }
+        ],
+        "span": null
+    },
+    "sections": [],
+    "span": null,
+    "subscales": [],
+    "type": "Scale",
+    "version": "1.0.0"
+}
